@@ -1,0 +1,43 @@
+# Runtime directories
+/log/*
+!/log/.keep
+
+# Temp files
+/tmp/pids/*
+!/tmp/pids/.keep
+/tmp/storage/*
+!/tmp/storage/.keep
+
+# Storage (uploaded files)
+/storage/*
+!/storage/.keep
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Rails credentials (keep enc, ignore key in non-dev)
+/config/master.key
+
+# Dependencies
+/vendor/bundle
+/node_modules
+
+# Build artifacts
+/public/assets
+/public/packs
+
+# Editor files
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Pidfiles
+/tmp/pids/*
+!/tmp/pids/.keep
+
+# Ignore bundler binstub for bundler itself
+/bin/bundle
