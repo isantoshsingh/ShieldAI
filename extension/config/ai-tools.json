@@ -1,0 +1,22 @@
+[
+  { "domain": "chat.openai.com",       "name": "ChatGPT",        "category": "chat" },
+  { "domain": "chatgpt.com",           "name": "ChatGPT",        "category": "chat" },
+  { "domain": "claude.ai",             "name": "Claude",         "category": "chat" },
+  { "domain": "gemini.google.com",     "name": "Gemini",         "category": "chat" },
+  { "domain": "bard.google.com",       "name": "Gemini (old)",   "category": "chat" },
+  { "domain": "copilot.microsoft.com", "name": "Copilot",        "category": "chat" },
+  { "domain": "perplexity.ai",         "name": "Perplexity",     "category": "search" },
+  { "domain": "you.com",               "name": "You.com",        "category": "search" },
+  { "domain": "phind.com",             "name": "Phind",          "category": "code" },
+  { "domain": "cursor.sh",             "name": "Cursor",         "category": "code" },
+  { "domain": "character.ai",          "name": "Character.AI",   "category": "chat" },
+  { "domain": "poe.com",               "name": "Poe",            "category": "chat" },
+  { "domain": "writesonic.com",        "name": "Writesonic",     "category": "writing" },
+  { "domain": "jasper.ai",             "name": "Jasper",         "category": "writing" },
+  { "domain": "copy.ai",               "name": "Copy.ai",        "category": "writing" },
+  { "domain": "midjourney.com",        "name": "Midjourney",     "category": "image" },
+  { "domain": "runway.com",            "name": "RunwayML",       "category": "image" },
+  { "domain": "pika.art",              "name": "Pika",           "category": "image" },
+  { "domain": "suno.com",              "name": "Suno AI",        "category": "other" },
+  { "domain": "elevenlabs.io",         "name": "ElevenLabs",     "category": "other" }
+]

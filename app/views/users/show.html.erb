@@ -1,0 +1,100 @@
+<% content_for :title, "#{@user.name || @user.email} — ShieldAI" %>
+
+<div class="page-header">
+  <div>
+    <h2><%= @user.name || @user.email.split("@").first %></h2>
+    <span style="color: #888; font-size: 13px;"><%= @user.email %></span>
+  </div>
+  <%= link_to "← All Employees", users_path, style: "color: #888; font-size: 13px;" %>
+</div>
+
+<div class="page-body">
+
+  <!-- Header Stats -->
+  <div class="three-col" style="margin-bottom: 24px;">
+    <div class="stat-card">
+      <div class="stat-value"><%= @user.events.count %></div>
+      <div class="stat-label">Total Events</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value"><%= @user.unique_tools_count %></div>
+      <div class="stat-label">AI Tools Used</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="font-size: 14px; padding-top: 10px;">
+        <div><%= @user.department.presence || "Unassigned" %></div>
+        <div style="margin-top: 4px;"><span class="badge badge-<%= @user.role %>"><%= @user.role %></span></div>
+      </div>
+      <div class="stat-label">Department / Role</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- Activity Timeline -->
+    <div>
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>Activity Timeline</h3>
+          <% if @user.first_seen %>
+            <span style="color: #aaa; font-size: 12px;">Since <%= @user.first_seen.strftime("%b %-d, %Y") %></span>
+          <% end %>
+        </div>
+        <div style="padding: 16px 20px; max-height: 520px; overflow-y: auto;">
+          <% if @events_by_date.any? %>
+            <% @events_by_date.each do |date, events| %>
+              <div class="timeline-date"><%= date.strftime("%A, %B %-d, %Y") %></div>
+              <% events.each do |event| %>
+                <div class="timeline-event">
+                  <% if event.ai_tool %>
+                    <span class="badge badge-<%= event.ai_tool.category %>"><%= event.ai_tool.name %></span>
+                  <% else %>
+                    <span class="badge badge-other"><%= event.domain %></span>
+                  <% end %>
+                  <span style="color: #666; font-size: 13px; flex: 1;"><%= event.page_title.presence || event.domain %></span>
+                  <span class="timeline-time"><%= event.detected_at.strftime("%-I:%M %p") %></span>
+                </div>
+              <% end %>
+            <% end %>
+          <% else %>
+            <p style="color: #aaa; text-align: center; padding: 24px 0;">No activity recorded yet.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tools Used -->
+    <div>
+      <div class="table-card">
+        <div class="table-card-header">
+          <h3>AI Tools Used</h3>
+        </div>
+        <% if @tools_used.any? %>
+          <table>
+            <thead>
+              <tr>
+                <th>Tool</th>
+                <th>Category</th>
+                <th style="text-align: right;">Events</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @tools_used.each do |tool| %>
+                <tr>
+                  <td style="font-weight: 600;"><%= tool.name %></td>
+                  <td><span class="badge badge-<%= tool.category %>"><%= tool.category %></span></td>
+                  <td style="text-align: right; font-weight: 700; color: #0f3460;">
+                    <%= tool.respond_to?(:events_count) ? tool.events_count : "—" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div style="padding: 24px; text-align: center; color: #aaa;">No tools detected yet.</div>
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</div>

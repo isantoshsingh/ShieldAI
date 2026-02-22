@@ -1,0 +1,26 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <span>🛡️</span>
+      <h1>ShieldAI</h1>
+      <p>Shadow AI Discovery Platform</p>
+    </div>
+
+    <% if flash[:alert] %>
+      <div class="alert alert-danger"><%= flash[:alert] %></div>
+    <% end %>
+    <% if flash[:notice] %>
+      <div class="alert alert-success"><%= flash[:notice] %></div>
+    <% end %>
+
+    <%= form_with url: auth_send_link_path, method: :post, local: true do |f| %>
+      <div class="form-group">
+        <%= f.label :email, "Work Email" %>
+        <%= f.email_field :email, placeholder: "admin@yourcompany.com", class: "form-control", autofocus: true %>
+      </div>
+      <%= f.submit "Send Login Link", class: "btn btn-primary btn-block" %>
+    <% end %>
+
+    <p class="login-note">A one-time login link will be sent to your email. No password required.</p>
+  </div>
+</div>

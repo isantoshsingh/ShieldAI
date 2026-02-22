@@ -1,0 +1,62 @@
+<% content_for :title, "Employees — ShieldAI" %>
+
+<div class="page-header">
+  <h2>Employees</h2>
+  <div class="search-bar">
+    <%= form_with url: users_path, method: :get, local: true do |f| %>
+      <%= f.search_field :search, value: params[:search], placeholder: "Search by name or email...", class: "form-control" %>
+    <% end %>
+  </div>
+</div>
+
+<div class="page-body">
+  <div class="table-card">
+    <div class="table-card-header">
+      <h3><%= @users.length %> Employees</h3>
+      <span style="color: #aaa; font-size: 12px;">Ranked by AI tool usage (30 days)</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th><%= link_to "Name", users_path(sort: "name", search: params[:search]), style: "color: inherit;" %></th>
+          <th><%= link_to "Email", users_path(sort: "email", search: params[:search]), style: "color: inherit;" %></th>
+          <th><%= link_to "Dept", users_path(sort: "department", search: params[:search]), style: "color: inherit;" %></th>
+          <th style="text-align: right;">Events (30d)</th>
+          <th style="text-align: right;">Tools Used</th>
+          <th>Last Seen</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each_with_index do |user, i| %>
+          <tr class="clickable" onclick="window.location='<%= user_path(user) %>'">
+            <td style="color: #aaa; font-weight: 700;"><%= i + 1 %></td>
+            <td style="font-weight: 600;"><%= user.name || "—" %></td>
+            <td style="color: #555;"><%= user.email %></td>
+            <td><%= user.department.presence || "—" %></td>
+            <td style="text-align: right; font-weight: 700; color: #0f3460;">
+              <%= user.event_count_last_30_days %>
+            </td>
+            <td style="text-align: right;">
+              <%= user.unique_tools_count %>
+            </td>
+            <td style="color: #aaa; font-size: 12px;">
+              <% if user.last_seen %>
+                <%= user.last_seen.strftime("%b %-d, %-I:%M %p") %>
+              <% else %>
+                Never
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+        <% if @users.empty? %>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 32px; color: #aaa;">
+              No employees found.
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

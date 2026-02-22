@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for(:title) || "ShieldAI — Shadow AI Discovery" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+      /* ---- Reset & Base ---- */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 14px; }
+      a { color: #0f3460; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      /* ---- Layout ---- */
+      .app-wrapper { display: flex; min-height: 100vh; }
+
+      /* ---- Sidebar ---- */
+      .sidebar { width: 220px; background: #1a1a2e; flex-shrink: 0; display: flex; flex-direction: column; }
+      .sidebar-logo { padding: 20px 18px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+      .sidebar-logo h1 { color: #fff; font-size: 18px; font-weight: 800; letter-spacing: 0.5px; }
+      .sidebar-logo span { font-size: 20px; margin-right: 6px; }
+      .sidebar-logo p { color: rgba(255,255,255,0.45); font-size: 11px; margin-top: 2px; }
+
+      .sidebar-nav { padding: 12px 0; flex: 1; }
+      .sidebar-nav a { display: flex; align-items: center; gap: 10px; padding: 10px 18px; color: rgba(255,255,255,0.7); font-size: 14px; transition: all 0.15s; border-left: 3px solid transparent; }
+      .sidebar-nav a:hover, .sidebar-nav a.active { color: #fff; background: rgba(255,255,255,0.08); border-left-color: #e94560; text-decoration: none; }
+      .sidebar-nav .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+      .sidebar-footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.08); }
+      .sidebar-footer .user-badge { color: rgba(255,255,255,0.6); font-size: 12px; }
+      .sidebar-footer .user-badge strong { display: block; color: #fff; font-size: 13px; }
+
+      /* ---- Main content ---- */
+      .main-content { flex: 1; overflow-x: hidden; }
+      .page-header { background: white; padding: 18px 28px; border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; }
+      .page-header h2 { font-size: 20px; font-weight: 700; }
+      .page-body { padding: 24px 28px; }
+
+      /* ---- Cards ---- */
+      .card { background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 20px; }
+      .card-title { font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+
+      /* ---- Stat Cards ---- */
+      .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+      .stat-card { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+      .stat-card .stat-value { font-size: 32px; font-weight: 800; color: #0f3460; }
+      .stat-card .stat-label { font-size: 13px; color: #888; margin-top: 4px; }
+      .stat-card .stat-icon { font-size: 22px; float: right; opacity: 0.4; }
+
+      /* ---- Tables ---- */
+      .table-card { background: white; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; margin-bottom: 24px; }
+      .table-card-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+      .table-card-header h3 { font-size: 15px; font-weight: 700; }
+      table { width: 100%; border-collapse: collapse; }
+      th { text-align: left; padding: 11px 20px; font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.4px; background: #fafafa; border-bottom: 1px solid #f0f0f0; }
+      td { padding: 12px 20px; border-bottom: 1px solid #f7f7f7; color: #333; vertical-align: middle; }
+      tr:last-child td { border-bottom: none; }
+      tr:hover td { background: #fafbff; }
+      tr.clickable { cursor: pointer; }
+
+      /* ---- Badges ---- */
+      .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+      .badge-approved { background: #e6f4ea; color: #1e7e34; }
+      .badge-unapproved { background: #f0f0f0; color: #777; }
+      .badge-high { background: #fdecea; color: #c62828; }
+      .badge-medium { background: #fff8e1; color: #795548; }
+      .badge-low { background: #e8f5e9; color: #388e3c; }
+      .badge-chat { background: #e3f2fd; color: #1565c0; }
+      .badge-code { background: #f3e5f5; color: #6a1b9a; }
+      .badge-writing { background: #fff3e0; color: #e65100; }
+      .badge-image { background: #fce4ec; color: #880e4f; }
+      .badge-search { background: #e0f7fa; color: #006064; }
+      .badge-other { background: #f1f8e9; color: #33691e; }
+
+      /* ---- Alerts ---- */
+      .alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+      .alert-danger { background: #fdecea; color: #c62828; border-left: 3px solid #c62828; }
+      .alert-success { background: #e6f4ea; color: #1e7e34; border-left: 3px solid #28a745; }
+      .alert-info { background: #e3f2fd; color: #1565c0; border-left: 3px solid #1565c0; }
+
+      /* ---- Buttons ---- */
+      .btn { display: inline-block; padding: 9px 18px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+      .btn-primary { background: #0f3460; color: white; }
+      .btn-primary:hover { background: #1a1a2e; color: white; text-decoration: none; }
+      .btn-block { display: block; width: 100%; text-align: center; }
+
+      /* ---- Forms ---- */
+      .form-group { margin-bottom: 16px; }
+      .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: #444; }
+      .form-control { width: 100%; padding: 10px 12px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 14px; outline: none; transition: border-color 0.2s; }
+      .form-control:focus { border-color: #0f3460; }
+
+      /* ---- Login page ---- */
+      .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); }
+      .login-card { background: white; border-radius: 12px; padding: 40px; width: 380px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+      .login-logo { text-align: center; margin-bottom: 28px; }
+      .login-logo span { font-size: 40px; }
+      .login-logo h1 { font-size: 24px; font-weight: 800; color: #1a1a2e; margin-top: 8px; }
+      .login-logo p { color: #888; font-size: 14px; margin-top: 4px; }
+      .login-note { text-align: center; color: #999; font-size: 13px; margin-top: 16px; }
+
+      /* ---- Charts ---- */
+      .chart-container { position: relative; height: 240px; }
+
+      /* ---- Timeline ---- */
+      .timeline-date { font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 0 4px; margin-top: 12px; border-bottom: 1px solid #f0f0f0; margin-bottom: 4px; }
+      .timeline-event { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
+      .timeline-event:last-child { border-bottom: none; }
+      .timeline-tool { font-weight: 600; color: #0f3460; }
+      .timeline-time { color: #aaa; font-size: 12px; margin-left: auto; }
+
+      /* ---- Two-col layout ---- */
+      .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+      /* ---- Search bar ---- */
+      .search-bar { display: flex; gap: 10px; align-items: center; }
+      .search-bar input { padding: 8px 14px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 14px; width: 240px; outline: none; }
+      .search-bar input:focus { border-color: #0f3460; }
+
+      /* ---- Responsive ---- */
+      @media (max-width: 900px) {
+        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        .two-col { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <% if logged_in? %>
+      <div class="app-wrapper">
+        <aside class="sidebar">
+          <div class="sidebar-logo">
+            <h1><span>🛡️</span>ShieldAI</h1>
+            <p>Shadow AI Discovery</p>
+          </div>
+          <nav class="sidebar-nav">
+            <%= link_to root_path, class: "#{controller_name == 'dashboard' ? 'active' : ''}" do %>
+              <span class="nav-icon">📊</span> Dashboard
+            <% end %>
+            <%= link_to users_path, class: "#{controller_name == 'users' ? 'active' : ''}" do %>
+              <span class="nav-icon">👥</span> Employees
+            <% end %>
+            <%= link_to tools_path, class: "#{controller_name == 'tools' ? 'active' : ''}" do %>
+              <span class="nav-icon">🤖</span> AI Tools
+            <% end %>
+          </nav>
+          <div class="sidebar-footer">
+            <div class="user-badge">
+              <strong><%= current_user.name || current_user.email.split("@").first %></strong>
+              <%= current_user.email %>
+            </div>
+            <%= link_to "Logout", logout_path, data: { turbo_method: :delete }, style: "color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 8px; display: block;" %>
+          </div>
+        </aside>
+
+        <div class="main-content">
+          <% if flash[:alert] %>
+            <div style="padding: 0 28px; margin-top: 16px;">
+              <div class="alert alert-danger"><%= flash[:alert] %></div>
+            </div>
+          <% end %>
+          <% if flash[:notice] %>
+            <div style="padding: 0 28px; margin-top: 16px;">
+              <div class="alert alert-success"><%= flash[:notice] %></div>
+            </div>
+          <% end %>
+
+          <%= yield %>
+        </div>
+      </div>
+    <% else %>
+      <%= yield %>
+    <% end %>
+  </body>
+</html>

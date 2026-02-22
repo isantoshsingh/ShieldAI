@@ -1,0 +1,155 @@
+<% content_for :title, "Dashboard — ShieldAI" %>
+
+<div class="page-header">
+  <h2>Dashboard</h2>
+  <span style="color: #999; font-size: 13px;"><%= Time.current.strftime("%A, %B %-d, %Y") %></span>
+</div>
+
+<div class="page-body">
+
+  <!-- Stat Cards -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="stat-icon">📅</span>
+      <div class="stat-value"><%= @total_events_today %></div>
+      <div class="stat-label">Events Today</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">🤖</span>
+      <div class="stat-value"><%= @unique_tools_today %></div>
+      <div class="stat-label">Unique Tools Today</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">👥</span>
+      <div class="stat-value"><%= @active_users_today %></div>
+      <div class="stat-label">Active Users Today</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">🏆</span>
+      <div class="stat-value" style="font-size: 18px; padding-top: 6px;"><%= @most_used_tool&.name || "—" %></div>
+      <div class="stat-label">Most Used Tool Today</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- Top Tools Chart -->
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-title">Top AI Tools (All Time)</div>
+      <div class="chart-container">
+        <canvas id="topToolsChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Department Breakdown -->
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-title">Department Breakdown (30 days)</div>
+      <% if @department_stats.any? %>
+        <table style="margin-top: 8px;">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th style="text-align: right;">Events</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @department_stats.each do |dept, count| %>
+              <tr>
+                <td><%= dept.presence || "Unassigned" %></td>
+                <td style="text-align: right; font-weight: 600;"><%= count %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p style="color: #aaa; margin-top: 12px; text-align: center;">No events yet</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Recent Events Feed -->
+  <%= turbo_frame_tag "recent-events", data: { controller: "refresh", refresh_url_value: request.path, refresh_interval_value: 60000 } do %>
+    <div class="table-card">
+      <div class="table-card-header">
+        <h3>Recent Events</h3>
+        <span style="color: #aaa; font-size: 12px;">Auto-refreshes every 60s</span>
+      </div>
+      <% if @recent_events.any? %>
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Tool</th>
+              <th>Domain</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @recent_events.each do |event| %>
+              <tr>
+                <td>
+                  <%= link_to event.user.name || event.user.email, user_path(event.user) %>
+                </td>
+                <td>
+                  <% if event.ai_tool %>
+                    <span class="badge badge-<%= event.ai_tool.category %>"><%= event.ai_tool.name %></span>
+                  <% else %>
+                    <%= event.domain %>
+                  <% end %>
+                </td>
+                <td style="color: #888; font-size: 13px;"><%= event.domain %></td>
+                <td style="color: #aaa; font-size: 12px; white-space: nowrap;">
+                  <%= event.detected_at.strftime("%-I:%M %p") %>
+                  <span style="color: #ddd;"> · </span>
+                  <%= event.detected_at.strftime("%b %-d") %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <div style="padding: 32px; text-align: center; color: #aaa;">
+          <div style="font-size: 32px; margin-bottom: 8px;">📭</div>
+          No events recorded yet. Install the Chrome extension to start monitoring.
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+</div>
+
+<script>
+  // Top Tools Chart
+  (function() {
+    const ctx = document.getElementById('topToolsChart');
+    if (!ctx) return;
+
+    const labels = <%= raw @top_tools.map(&:name).to_json %>;
+    const data   = <%= raw @top_tools.map { |t| t.respond_to?(:events_count) ? t.events_count.to_i : 0 }.to_json %>;
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Events',
+          data: data,
+          backgroundColor: '#0f3460cc',
+          borderColor: '#0f3460',
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { beginAtZero: true, ticks: { precision: 0 } },
+          y: { ticks: { font: { size: 12 } } }
+        }
+      }
+    });
+  })();
+</script>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShieldAI</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      color: #1a1a2e;
+      background: #ffffff;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header h1 {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .header .shield {
+      font-size: 20px;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    /* Onboarding state */
+    #onboarding-view {
+      display: none;
+    }
+
+    #onboarding-view p {
+      color: #555;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #0f3460;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 11px;
+      background: #0f3460;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #16213e;
+    }
+
+    .btn:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    /* Active state */
+    #active-view {
+      display: none;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #e6f4ea;
+      color: #1e7e34;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .status-badge .dot {
+      width: 8px;
+      height: 8px;
+      background: #28a745;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .user-info {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .user-info .name {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .user-info .email {
+      color: #666;
+      font-size: 13px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      flex: 1;
+      background: #f0f4ff;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-card .value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f3460;
+    }
+
+    .stat-card .label {
+      font-size: 11px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #666;
+      border: 1.5px solid #ddd;
+      font-weight: 500;
+    }
+
+    .btn-secondary:hover {
+      background: #f5f5f5;
+      color: #333;
+    }
+
+    /* Error message */
+    .error-msg {
+      color: #dc3545;
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="shield">🛡️</span>
+    <h1>ShieldAI Monitor</h1>
+  </div>
+
+  <div class="content">
+    <div id="loading-view" class="loading">Loading...</div>
+
+    <!-- Onboarding: email activation -->
+    <div id="onboarding-view">
+      <p>Enter your work email to activate AI usage monitoring.</p>
+      <div class="form-group">
+        <label for="email-input">Work Email</label>
+        <input
+          type="email"
+          id="email-input"
+          placeholder="your@company.com"
+          autocomplete="email"
+        >
+      </div>
+      <button class="btn" id="activate-btn">Activate Monitoring</button>
+      <div class="error-msg" id="error-msg"></div>
+    </div>
+
+    <!-- Active: monitoring running -->
+    <div id="active-view">
+      <div class="status-badge">
+        <span class="dot"></span>
+        Monitoring Active
+      </div>
+      <div class="user-info">
+        <div class="name" id="user-name">—</div>
+        <div class="email" id="user-email">—</div>
+      </div>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="value" id="events-count">—</div>
+          <div class="label">Events (7d)</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary" id="deactivate-btn">Remove from this device</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

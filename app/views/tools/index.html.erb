@@ -1,0 +1,62 @@
+<% content_for :title, "AI Tools — ShieldAI" %>
+
+<div class="page-header">
+  <h2>AI Tools</h2>
+  <span style="color: #999; font-size: 13px;"><%= @tools.length %> tools monitored</span>
+</div>
+
+<div class="page-body">
+  <div class="table-card">
+    <div class="table-card-header">
+      <h3>Detected AI Domains</h3>
+      <span style="color: #aaa; font-size: 12px;">Sorted by usage</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tool Name</th>
+          <th>Domain</th>
+          <th>Category</th>
+          <th>Risk</th>
+          <th style="text-align: right;">Total Events</th>
+          <th style="text-align: right;">Unique Users</th>
+          <th>First Detected</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @tools.each_with_index do |tool, i| %>
+          <tr>
+            <td style="color: #aaa; font-weight: 700;"><%= i + 1 %></td>
+            <td style="font-weight: 600;"><%= tool.name %></td>
+            <td style="color: #555; font-size: 13px; font-family: monospace;"><%= tool.domain %></td>
+            <td>
+              <span class="badge badge-<%= tool.category %>"><%= tool.category || "—" %></span>
+            </td>
+            <td>
+              <span class="badge badge-<%= tool.risk_level %>"><%= tool.risk_level %></span>
+            </td>
+            <td style="text-align: right; font-weight: 700; color: #0f3460;">
+              <%= tool.respond_to?(:total_events_count) ? tool.total_events_count : 0 %>
+            </td>
+            <td style="text-align: right;">
+              <%= tool.respond_to?(:unique_users_count) ? tool.unique_users_count : 0 %>
+            </td>
+            <td style="color: #aaa; font-size: 12px;">
+              <% fd = tool.first_detected %>
+              <%= fd ? fd.strftime("%b %-d, %Y") : "Never" %>
+            </td>
+            <td>
+              <% if tool.approved? %>
+                <span class="badge badge-approved">Approved</span>
+              <% else %>
+                <span class="badge badge-unapproved">Unreviewed</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

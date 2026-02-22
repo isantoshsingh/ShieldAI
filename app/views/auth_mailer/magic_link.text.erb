@@ -1,0 +1,12 @@
+Hi <%= @user.name || @user.email %>,
+
+Click the link below to log in to the ShieldAI dashboard:
+
+<%= @login_url %>
+
+This link expires in 15 minutes and can only be used once.
+
+If you didn't request this, you can safely ignore this email.
+
+--
+ShieldAI — Shadow AI Discovery Platform
