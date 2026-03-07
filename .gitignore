@@ -27,3 +27,4 @@
 /config/credentials/*.key
 
 /node_modules
+tmp/cache/
