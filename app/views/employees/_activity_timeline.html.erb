@@ -5,8 +5,9 @@
       <div class="flex-1">
         <div class="flex items-center justify-between">
           <span class="text-sm font-medium text-gray-900"><%= event.ai_tool.name %></span>
-          <span class="inline-flex px-2 py-0.5 text-xs rounded-full <%= event.ai_tool.approved? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
-            <%= event.ai_tool.approved? ? "Approved" : "Unapproved" %>
+          <% approved = event.ai_tool.approved_for?(current_organisation) %>
+          <span class="inline-flex px-2 py-0.5 text-xs rounded-full <%= approved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= approved ? "Approved" : "Unapproved" %>
           </span>
         </div>
         <p class="text-xs text-gray-500"><%= event.detected_at.strftime("%b %-d, %Y at %l:%M %p") %></p>

@@ -12,6 +12,12 @@ class AiTool < ApplicationRecord
 
   before_save :normalize_domain
 
+  def approved_for?(organisation)
+    organisation_ai_tools
+      .find_by(organisation_id: organisation.id)
+      &.approved? || false
+  end
+
   private
 
   def normalize_domain

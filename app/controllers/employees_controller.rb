@@ -23,7 +23,7 @@ class EmployeesController < ApplicationController
 
   def show
     @employee = current_organisation.employees.find(params[:id])
-    @events = @employee.detection_events.includes(:ai_tool).recent.limit(20)
+    @events = @employee.detection_events.includes(ai_tool: :organisation_ai_tools).recent.limit(20)
     @tools_used = @employee.detection_events
                            .joins(ai_tool: :organisation_ai_tools)
                            .where(organisation_ai_tools: { organisation_id: current_organisation.id })
@@ -60,7 +60,7 @@ class EmployeesController < ApplicationController
   def more_events
     @employee = current_organisation.employees.find(params[:id])
     @offset = (params[:offset] || 0).to_i
-    @events = @employee.detection_events.includes(:ai_tool).recent.offset(@offset).limit(20)
+    @events = @employee.detection_events.includes(ai_tool: :organisation_ai_tools).recent.offset(@offset).limit(20)
     render layout: false
   end
 

@@ -60,10 +60,10 @@ RSpec.describe "Tenancy Isolation", type: :request do
   describe "Super admin routing" do
     let(:super_admin) { create(:user, :super_admin) }
 
-    it "super_admin hitting GET / receives 403" do
+    it "super_admin hitting GET / redirects to /super" do
       sign_in super_admin
       get root_path
-      expect(response).to have_http_status(:forbidden)
+      expect(response).to redirect_to(super_root_path)
     end
 
     it "super_admin can access GET /super" do
