@@ -1,0 +1,19 @@
+<%= turbo_stream.replace dom_id(@ai_tool) do %>
+  <tr id="<%= dom_id(@ai_tool) %>">
+    <td class="px-4 py-3 text-sm">
+      <span class="mr-2"><%= @ai_tool.icon_emoji %></span>
+      <span class="font-medium text-gray-900"><%= @ai_tool.name %></span>
+    </td>
+    <td class="px-4 py-3 text-sm text-gray-500"><%= @ai_tool.domain %></td>
+    <td class="px-4 py-3 text-sm">
+      <span class="inline-flex px-2 py-0.5 text-xs rounded-full bg-gray-100 text-gray-800"><%= @ai_tool.category.capitalize %></span>
+    </td>
+    <td class="px-4 py-3 text-sm text-gray-500"><%= @ai_tool.detection_events.count %></td>
+    <td class="px-4 py-3 text-sm text-gray-500"><%= @ai_tool.detection_events.select(:employee_id).distinct.count %></td>
+    <td class="px-4 py-3 text-sm">
+      <%= button_to toggle_approved_ai_tool_path(@ai_tool), method: :patch, class: "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none #{@ai_tool.approved? ? 'bg-green-500' : 'bg-gray-200'}" do %>
+        <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out <%= @ai_tool.approved? ? 'translate-x-5' : 'translate-x-0' %>"></span>
+      <% end %>
+    </td>
+  </tr>
+<% end %>
