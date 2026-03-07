@@ -1,0 +1,140 @@
+- name: ChatGPT
+  domain: chat.openai.com
+  category: chat
+  icon_emoji: "💬"
+- name: OpenAI Platform
+  domain: platform.openai.com
+  category: chat
+  icon_emoji: "🧠"
+- name: Claude
+  domain: claude.ai
+  category: chat
+  icon_emoji: "🤖"
+- name: Gemini
+  domain: gemini.google.com
+  category: chat
+  icon_emoji: "✨"
+- name: Google AI Studio
+  domain: aistudio.google.com
+  category: chat
+  icon_emoji: "🔬"
+- name: Microsoft Copilot
+  domain: copilot.microsoft.com
+  category: chat
+  icon_emoji: "🪟"
+- name: Bing Copilot
+  domain: www.bing.com
+  category: chat
+  icon_emoji: "🔍"
+- name: Poe
+  domain: poe.com
+  category: chat
+  icon_emoji: "📝"
+- name: Character.AI
+  domain: character.ai
+  category: chat
+  icon_emoji: "🎭"
+- name: Mistral Le Chat
+  domain: chat.mistral.ai
+  category: chat
+  icon_emoji: "🌬️"
+- name: Grok (xAI)
+  domain: grok.com
+  category: chat
+  icon_emoji: "🚀"
+- name: Meta AI
+  domain: meta.ai
+  category: chat
+  icon_emoji: "👤"
+- name: Perplexity AI
+  domain: perplexity.ai
+  category: search
+  icon_emoji: "🔎"
+- name: You.com
+  domain: you.com
+  category: search
+  icon_emoji: "🌐"
+- name: Phind
+  domain: phind.com
+  category: code
+  icon_emoji: "💻"
+- name: Cursor
+  domain: cursor.sh
+  category: code
+  icon_emoji: "⌨️"
+- name: Replit AI
+  domain: replit.com
+  category: code
+  icon_emoji: "🖥️"
+- name: Codeium / Windsurf
+  domain: codeium.com
+  category: code
+  icon_emoji: "🏄"
+- name: Tabnine
+  domain: app.tabnine.com
+  category: code
+  icon_emoji: "⚡"
+- name: Bolt.new
+  domain: bolt.new
+  category: code
+  icon_emoji: "⚡"
+- name: v0 by Vercel
+  domain: v0.dev
+  category: code
+  icon_emoji: "▲"
+- name: Midjourney
+  domain: midjourney.com
+  category: image
+  icon_emoji: "🎨"
+- name: Adobe Firefly
+  domain: firefly.adobe.com
+  category: image
+  icon_emoji: "🔥"
+- name: Canva AI
+  domain: canva.com
+  category: image
+  icon_emoji: "🖌️"
+- name: Leonardo AI
+  domain: app.leonardo.ai
+  category: image
+  icon_emoji: "🖼️"
+- name: Jasper AI
+  domain: jasper.ai
+  category: writing
+  icon_emoji: "✍️"
+- name: Copy.ai
+  domain: copy.ai
+  category: writing
+  icon_emoji: "📋"
+- name: Writesonic
+  domain: writesonic.com
+  category: writing
+  icon_emoji: "📝"
+- name: Grammarly
+  domain: grammarly.com
+  category: writing
+  icon_emoji: "📖"
+- name: Notion AI
+  domain: notion.so
+  category: writing
+  icon_emoji: "📓"
+- name: Otter.ai
+  domain: otter.ai
+  category: other
+  icon_emoji: "🦦"
+- name: Runway ML
+  domain: runwayml.com
+  category: other
+  icon_emoji: "🎬"
+- name: ElevenLabs
+  domain: elevenlabs.io
+  category: other
+  icon_emoji: "🔊"
+- name: Suno AI
+  domain: suno.com
+  category: other
+  icon_emoji: "🎵"
+- name: Luma AI
+  domain: lumalabs.ai
+  category: other
+  icon_emoji: "🌟"
