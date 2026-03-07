@@ -7,7 +7,7 @@ class Employee < ApplicationRecord
   validates :email, presence: true, uniqueness: { scope: :organisation_id, case_sensitive: false }
   validates :extension_token, presence: true, uniqueness: true
 
-  before_create :generate_extension_token
+  before_validation :generate_extension_token, on: :create
 
   def risk_level
     @risk_level ||= begin
