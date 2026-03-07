@@ -57,9 +57,9 @@ class EmployeesController < ApplicationController
 
   def more_events
     @employee = current_organisation.employees.find(params[:id])
-    offset = (params[:offset] || 0).to_i
-    @events = @employee.detection_events.includes(:ai_tool).recent.offset(offset).limit(20)
-    render partial: "activity_timeline", locals: { events: @events, employee: @employee, offset: offset }
+    @offset = (params[:offset] || 0).to_i
+    @events = @employee.detection_events.includes(:ai_tool).recent.offset(@offset).limit(20)
+    render layout: false
   end
 
   private
