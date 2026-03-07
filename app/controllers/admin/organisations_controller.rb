@@ -1,7 +1,7 @@
 module Admin
   class OrganisationsController < BaseController
     def index
-      @pagy, @organisations = pagy(:offset, Organisation.order(created_at: :desc), limit: 25)
+      @pagy, @organisations = pagy(:offset, Organisation.left_joins(:employees).select("organisations.*, COUNT(employees.id) AS employees_count").group("organisations.id").order(created_at: :desc), limit: 25)
     end
 
     def show

@@ -2,7 +2,7 @@ class EmployeesController < ApplicationController
   before_action :check_org_admin!, only: [:new, :create, :destroy, :regenerate_token]
 
   def index
-    @employees = current_organisation.employees
+    @employees = current_organisation.employees.includes(detection_events: :ai_tool)
     if params[:search].present?
       search = "%#{params[:search]}%"
       @employees = @employees.where("name ILIKE ? OR email ILIKE ?", search, search)

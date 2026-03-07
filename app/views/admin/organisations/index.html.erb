@@ -23,7 +23,7 @@
         <tr>
           <td class="px-4 py-3 text-sm font-medium text-gray-900"><%= org.name %></td>
           <td class="px-4 py-3 text-sm text-gray-500"><%= org.slug %></td>
-          <td class="px-4 py-3 text-sm text-gray-500"><%= org.employees.count %></td>
+          <td class="px-4 py-3 text-sm text-gray-500"><%= org.employees_count %></td>
           <td class="px-4 py-3 text-sm text-gray-500"><%= org.created_at.strftime("%b %-d, %Y") %></td>
           <td class="px-4 py-3 text-sm"><%= link_to "View", admin_organisation_path(org), class: "text-indigo-600 hover:text-indigo-500" %></td>
         </tr>
