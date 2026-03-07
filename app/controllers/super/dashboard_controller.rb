@@ -1,4 +1,4 @@
-module Admin
+module Super
   class DashboardController < BaseController
     def index
       @total_organisations = Organisation.count

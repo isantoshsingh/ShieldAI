@@ -66,9 +66,9 @@ RSpec.describe "Tenancy Isolation", type: :request do
       expect(response).to have_http_status(:forbidden)
     end
 
-    it "super_admin can access GET /admin" do
+    it "super_admin can access GET /super" do
       sign_in super_admin
-      get admin_root_path
+      get super_root_path
       expect(response).to have_http_status(:ok)
     end
   end

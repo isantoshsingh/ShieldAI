@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   end
 
   # Super admin namespace (super_admin only)
-  namespace :admin do
+  namespace :super do
     root "dashboard#index"
     resources :organisations, only: [:index, :show, :new, :create]
     resources :users, only: [:index]

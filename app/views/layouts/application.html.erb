@@ -27,9 +27,9 @@
             <div class="flex items-center space-x-8">
               <span class="text-xl font-bold text-indigo-600">ShieldAI</span>
               <% if current_user.super_admin? %>
-                <%= link_to "Dashboard", admin_root_path, class: "text-gray-600 hover:text-gray-900" %>
-                <%= link_to "Organisations", admin_organisations_path, class: "text-gray-600 hover:text-gray-900" %>
-                <%= link_to "Users", admin_users_path, class: "text-gray-600 hover:text-gray-900" %>
+                <%= link_to "Dashboard", super_root_path, class: "text-gray-600 hover:text-gray-900" %>
+                <%= link_to "Organisations", super_organisations_path, class: "text-gray-600 hover:text-gray-900" %>
+                <%= link_to "Users", super_users_path, class: "text-gray-600 hover:text-gray-900" %>
               <% else %>
                 <%= link_to "Dashboard", root_path, class: "text-gray-600 hover:text-gray-900" %>
                 <%= link_to "Employees", employees_path, class: "text-gray-600 hover:text-gray-900" %>

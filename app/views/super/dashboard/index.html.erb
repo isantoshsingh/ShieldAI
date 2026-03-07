@@ -21,7 +21,7 @@
 
 <div class="flex justify-between items-center mb-4">
   <h2 class="text-lg font-semibold text-gray-900">Organisations</h2>
-  <%= link_to "New Organisation", new_admin_organisation_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm" %>
+  <%= link_to "New Organisation", new_super_organisation_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm" %>
 </div>
 
 <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -42,7 +42,7 @@
           <td class="px-4 py-3 text-sm text-gray-500"><%= org.employees_count %></td>
           <td class="px-4 py-3 text-sm text-gray-500"><%= org.events_30d_count %></td>
           <td class="px-4 py-3 text-sm text-gray-500"><%= org.created_at.strftime("%b %-d, %Y") %></td>
-          <td class="px-4 py-3 text-sm"><%= link_to "View", admin_organisation_path(org), class: "text-indigo-600 hover:text-indigo-500" %></td>
+          <td class="px-4 py-3 text-sm"><%= link_to "View", super_organisation_path(org), class: "text-indigo-600 hover:text-indigo-500" %></td>
         </tr>
       <% end %>
     </tbody>

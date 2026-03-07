@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
     authenticate_user!
 
     if current_user.super_admin?
-      render plain: "Super admin must use /admin routes.", status: :forbidden
+      render plain: "Super admin must use /super routes.", status: :forbidden
       return
     end
 

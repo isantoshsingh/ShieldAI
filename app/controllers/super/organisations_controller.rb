@@ -1,4 +1,4 @@
-module Admin
+module Super
   class OrganisationsController < BaseController
     def index
       @pagy, @organisations = pagy(:offset, Organisation.left_joins(:employees).select("organisations.*, COUNT(employees.id) AS employees_count").group("organisations.id").order(created_at: :desc), limit: 25)
@@ -27,7 +27,7 @@ module Admin
         @user.save!
       end
 
-      redirect_to admin_organisation_path(@organisation), notice: "Organisation created."
+      redirect_to super_organisation_path(@organisation), notice: "Organisation created."
     rescue ActiveRecord::RecordInvalid
       render :new, status: :unprocessable_entity
     end
