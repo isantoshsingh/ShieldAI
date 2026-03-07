@@ -2,25 +2,8 @@
   <p class="text-yellow-800 font-medium">Super Admin Mode: viewing all organisations</p>
 </div>
 
-<h1 class="text-2xl font-bold text-gray-900 mb-6">Admin Dashboard</h1>
-
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-  <div class="bg-white rounded-lg shadow p-6">
-    <p class="text-sm text-gray-500">Total Organisations</p>
-    <p class="text-3xl font-bold text-gray-900"><%= @total_organisations %></p>
-  </div>
-  <div class="bg-white rounded-lg shadow p-6">
-    <p class="text-sm text-gray-500">Total Employees</p>
-    <p class="text-3xl font-bold text-gray-900"><%= @total_employees %></p>
-  </div>
-  <div class="bg-white rounded-lg shadow p-6">
-    <p class="text-sm text-gray-500">Events (Last 30 Days)</p>
-    <p class="text-3xl font-bold text-gray-900"><%= @total_events_30d %></p>
-  </div>
-</div>
-
-<div class="flex justify-between items-center mb-4">
-  <h2 class="text-lg font-semibold text-gray-900">Organisations</h2>
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold text-gray-900">All Organisations</h1>
   <%= link_to "New Organisation", new_admin_organisation_path, class: "px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm" %>
 </div>
 
@@ -29,8 +12,8 @@
     <thead class="bg-gray-50">
       <tr>
         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Employees</th>
-        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Events (30d)</th>
         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"></th>
       </tr>
@@ -39,8 +22,8 @@
       <% @organisations.each do |org| %>
         <tr>
           <td class="px-4 py-3 text-sm font-medium text-gray-900"><%= org.name %></td>
+          <td class="px-4 py-3 text-sm text-gray-500"><%= org.slug %></td>
           <td class="px-4 py-3 text-sm text-gray-500"><%= org.employees.count %></td>
-          <td class="px-4 py-3 text-sm text-gray-500"><%= org.detection_events.where(detected_at: 30.days.ago..).count %></td>
           <td class="px-4 py-3 text-sm text-gray-500"><%= org.created_at.strftime("%b %-d, %Y") %></td>
           <td class="px-4 py-3 text-sm"><%= link_to "View", admin_organisation_path(org), class: "text-indigo-600 hover:text-indigo-500" %></td>
         </tr>
@@ -48,3 +31,5 @@
     </tbody>
   </table>
 </div>
+
+<%= pagy_nav(@pagy) %>
