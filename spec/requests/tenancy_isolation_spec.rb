@@ -105,6 +105,12 @@ RSpec.describe "Tenancy Isolation", type: :request do
       patch toggle_approved_ai_tool_path(tool_a)
       expect(response).to have_http_status(:redirect)
     end
+
+    it "org_member gets 403 on reports#export" do
+      sign_in member_a
+      post export_reports_path, params: { start_date: 30.days.ago.to_date, end_date: Date.today }
+      expect(response).to have_http_status(:forbidden)
+    end
   end
 
   describe "Employee#risk_level" do
