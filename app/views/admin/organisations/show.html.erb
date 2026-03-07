@@ -77,12 +77,12 @@
 </div>
 
 <div class="mt-6 bg-white rounded-lg shadow p-6">
-  <h2 class="text-lg font-semibold text-gray-900 mb-4">AI Tools (<%= @ai_tools.count %>)</h2>
+  <h2 class="text-lg font-semibold text-gray-900 mb-4">AI Tools (<%= @org_ai_tools.count %>)</h2>
   <div class="flex flex-wrap gap-2">
-    <% @ai_tools.each do |tool| %>
-      <span class="inline-flex items-center px-3 py-1 text-sm rounded-full border <%= tool.approved? ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50' %>">
-        <span class="mr-1"><%= tool.icon_emoji %></span>
-        <%= tool.name %>
+    <% @org_ai_tools.each do |oat| %>
+      <span class="inline-flex items-center px-3 py-1 text-sm rounded-full border <%= oat.approved? ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50' %>">
+        <span class="mr-1"><%= oat.ai_tool.icon_emoji %></span>
+        <%= oat.ai_tool.name %>
       </span>
     <% end %>
   </div>

@@ -118,3 +118,41 @@ FOREIGN KEY ("ai_tool_id")
   [1m[36mOrganisation Count (0.4ms)[0m  [1m[34mSELECT COUNT(*) FROM "organisations" /*application='Shieldai'*/[0m
   [1m[36mUser Count (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM "users" WHERE "users"."role" = 'org_admin' /*application='Shieldai'*/[0m
   [1m[36mAiTool Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "ai_tools" /*application='Shieldai'*/[0m
+  [1m[35m (1.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(6553832484291528660) /*application='Shieldai'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Shieldai'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.8ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='Shieldai'*/[0m
+Migrating to RefactorAiToolsToGlobal (20260307094314)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='Shieldai'*/[0m
+  [1m[35m (12.5ms)[0m  [1m[35mCREATE TABLE "organisation_ai_tools" ("id" bigserial primary key, "organisation_id" bigint NOT NULL, "ai_tool_id" bigint NOT NULL, "approved" boolean DEFAULT FALSE NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_c7c5f1606c"
+FOREIGN KEY ("organisation_id")
+  REFERENCES "organisations" ("id")
+ ON DELETE CASCADE, CONSTRAINT "fk_rails_fab4066e6c"
+FOREIGN KEY ("ai_tool_id")
+  REFERENCES "ai_tools" ("id")
+ ON DELETE CASCADE) /*application='Shieldai'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_organisation_ai_tools_on_organisation_id" ON "organisation_ai_tools" ("organisation_id") /*application='Shieldai'*/[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE INDEX "index_organisation_ai_tools_on_ai_tool_id" ON "organisation_ai_tools" ("ai_tool_id") /*application='Shieldai'*/[0m
+  [1m[35m (0.9ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_organisation_ai_tools_on_organisation_id_and_ai_tool_id" ON "organisation_ai_tools" ("organisation_id", "ai_tool_id") /*application='Shieldai'*/[0m
+  [1m[35m (5.0ms)[0m  [1m[32mINSERT INTO organisation_ai_tools (organisation_id, ai_tool_id, approved, created_at, updated_at)
+SELECT organisation_id, id, approved, created_at, updated_at
+FROM ai_tools
+WHERE organisation_id IS NOT NULL
+ /*application='Shieldai'*/[0m
+  [1m[35m (2.1ms)[0m  [1m[31mDELETE FROM ai_tools
+WHERE id NOT IN (
+  SELECT MIN(id) FROM ai_tools GROUP BY domain
+)
+ /*application='Shieldai'*/[0m
+  [1m[35m (1.6ms)[0m  [1m[35mDROP INDEX  "index_ai_tools_on_organisation_id_and_domain" /*application='Shieldai'*/[0m
+  [1m[35m (0.5ms)[0m  [1m[35mALTER TABLE "ai_tools" DROP CONSTRAINT "fk_rails_d0b2d76104" /*application='Shieldai'*/[0m
+  [1m[35m (0.4ms)[0m  [1m[35mALTER TABLE "ai_tools" DROP COLUMN "organisation_id" /*application='Shieldai'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[35mALTER TABLE "ai_tools" DROP COLUMN "approved" /*application='Shieldai'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_ai_tools_on_domain" ON "ai_tools" ("domain") /*application='Shieldai'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20260307094314') RETURNING "version" /*application='Shieldai'*/[0m
+  [1m[36mTRANSACTION (1.4ms)[0m  [1m[35mCOMMIT /*application='Shieldai'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(6553832484291528660) /*application='Shieldai'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='Shieldai'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='Shieldai'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public /*application='Shieldai'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='Shieldai'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public /*application='Shieldai'*/[0m

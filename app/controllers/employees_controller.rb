@@ -2,7 +2,7 @@ class EmployeesController < ApplicationController
   before_action :check_org_admin!, only: [:new, :create, :destroy, :regenerate_token]
 
   def index
-    @employees = current_organisation.employees.includes(detection_events: :ai_tool)
+    @employees = current_organisation.employees.includes(detection_events: { ai_tool: :organisation_ai_tools })
     if params[:search].present?
       search = "%#{params[:search]}%"
       @employees = @employees.where("name ILIKE ? OR email ILIKE ?", search, search)
@@ -24,8 +24,10 @@ class EmployeesController < ApplicationController
   def show
     @employee = current_organisation.employees.find(params[:id])
     @events = @employee.detection_events.includes(:ai_tool).recent.limit(20)
-    @tools_used = @employee.detection_events.joins(:ai_tool)
-                           .group("ai_tools.name", "ai_tools.icon_emoji", "ai_tools.approved")
+    @tools_used = @employee.detection_events
+                           .joins(ai_tool: :organisation_ai_tools)
+                           .where(organisation_ai_tools: { organisation_id: current_organisation.id })
+                           .group("ai_tools.name", "ai_tools.icon_emoji", "organisation_ai_tools.approved")
                            .count
   end
 

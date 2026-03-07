@@ -20,8 +20,8 @@
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-200">
-      <% @ai_tools.each do |tool| %>
-        <tr id="<%= dom_id(tool) %>">
+      <% @org_ai_tools.each do |tool| %>
+        <tr id="ai_tool_<%= tool.id %>">
           <td class="px-4 py-3 text-sm">
             <span class="mr-2"><%= tool.icon_emoji %></span>
             <span class="font-medium text-gray-900"><%= tool.name %></span>

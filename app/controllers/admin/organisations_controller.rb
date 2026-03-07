@@ -7,7 +7,7 @@ module Admin
     def show
       @organisation = Organisation.find(params[:id])
       @employees = @organisation.employees
-      @ai_tools = @organisation.ai_tools
+      @org_ai_tools = @organisation.organisation_ai_tools.includes(:ai_tool)
       @users = @organisation.users
       @recent_events = @organisation.detection_events.includes(:employee, :ai_tool).recent.limit(20)
     end

@@ -11,7 +11,10 @@ class Employee < ApplicationRecord
 
   def risk_level
     @risk_level ||= begin
-      count = detection_events.joins(:ai_tool).where(ai_tools: { approved: false }).count
+      count = detection_events
+        .joins(ai_tool: :organisation_ai_tools)
+        .where(organisation_ai_tools: { organisation_id: organisation_id, approved: false })
+        .count
       if count >= 3
         "high"
       elsif count >= 1

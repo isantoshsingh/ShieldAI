@@ -10,21 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_07_041930) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_07_094314) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "ai_tools", force: :cascade do |t|
-    t.boolean "approved", default: false, null: false
     t.string "category", null: false
     t.datetime "created_at", null: false
     t.string "domain", null: false
     t.string "icon_emoji", default: "🤖", null: false
     t.string "name", null: false
-    t.bigint "organisation_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["organisation_id", "domain"], name: "index_ai_tools_on_organisation_id_and_domain", unique: true
-    t.index ["organisation_id"], name: "index_ai_tools_on_organisation_id"
+    t.index ["domain"], name: "index_ai_tools_on_domain", unique: true
   end
 
   create_table "daily_summaries", force: :cascade do |t|
@@ -72,6 +69,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_07_041930) do
     t.index ["organisation_id"], name: "index_employees_on_organisation_id"
   end
 
+  create_table "organisation_ai_tools", force: :cascade do |t|
+    t.bigint "ai_tool_id", null: false
+    t.boolean "approved", default: false, null: false
+    t.datetime "created_at", null: false
+    t.bigint "organisation_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ai_tool_id"], name: "index_organisation_ai_tools_on_ai_tool_id"
+    t.index ["organisation_id", "ai_tool_id"], name: "index_organisation_ai_tools_on_organisation_id_and_ai_tool_id", unique: true
+    t.index ["organisation_id"], name: "index_organisation_ai_tools_on_organisation_id"
+  end
+
   create_table "organisations", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
@@ -95,7 +103,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_07_041930) do
     t.index ["role"], name: "index_users_on_role"
   end
 
-  add_foreign_key "ai_tools", "organisations", on_delete: :cascade
   add_foreign_key "daily_summaries", "ai_tools", on_delete: :cascade
   add_foreign_key "daily_summaries", "employees", on_delete: :cascade
   add_foreign_key "daily_summaries", "organisations", on_delete: :cascade
@@ -103,5 +110,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_07_041930) do
   add_foreign_key "detection_events", "employees", on_delete: :cascade
   add_foreign_key "detection_events", "organisations", on_delete: :cascade
   add_foreign_key "employees", "organisations", on_delete: :cascade
+  add_foreign_key "organisation_ai_tools", "ai_tools", on_delete: :cascade
+  add_foreign_key "organisation_ai_tools", "organisations", on_delete: :cascade
   add_foreign_key "users", "organisations", on_delete: :cascade
 end

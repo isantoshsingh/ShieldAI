@@ -13,9 +13,15 @@ class CsvExportJob < ApplicationJob
     end
 
     events = organisation.detection_events
-                         .includes(:employee, :ai_tool)
+                         .includes(:employee, ai_tool: :organisation_ai_tools)
                          .where(detected_at: Date.parse(start_date)..Date.parse(end_date).end_of_day)
                          .order(detected_at: :desc)
+
+    # Build a lookup for approved status per ai_tool for this org
+    approved_lookup = OrganisationAiTool
+                        .where(organisation_id: organisation_id)
+                        .pluck(:ai_tool_id, :approved)
+                        .to_h
 
     csv_string = CSV.generate do |csv|
       csv << ["Date/Time", "Employee Name", "Employee Email", "Department", "AI Tool", "Category", "Approved"]
@@ -27,7 +33,7 @@ class CsvExportJob < ApplicationJob
           event.employee.department,
           event.ai_tool.name,
           event.ai_tool.category,
-          event.ai_tool.approved? ? "Yes" : "No"
+          approved_lookup[event.ai_tool_id] ? "Yes" : "No"
         ]
       end
     end

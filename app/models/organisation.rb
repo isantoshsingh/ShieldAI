@@ -1,7 +1,8 @@
 class Organisation < ApplicationRecord
   has_many :users, dependent: :destroy
   has_many :employees, dependent: :destroy
-  has_many :ai_tools, dependent: :destroy
+  has_many :organisation_ai_tools, dependent: :destroy
+  has_many :ai_tools, through: :organisation_ai_tools
   has_many :detection_events, dependent: :destroy
   has_many :daily_summaries, dependent: :destroy
 
@@ -28,19 +29,18 @@ class Organisation < ApplicationRecord
     tools_data = YAML.load_file(Rails.root.join("config/ai_tools_seed.yml"))
     now = Time.current
 
-    rows = tools_data.map do |tool|
-      {
-        organisation_id: id,
-        name: tool["name"],
-        domain: tool["domain"],
-        category: tool["category"],
-        icon_emoji: tool["icon_emoji"] || "🤖",
-        approved: false,
-        created_at: now,
-        updated_at: now
-      }
-    end
+    tools_data.each do |tool|
+      ai_tool = AiTool.find_or_create_by!(domain: tool["domain"].downcase.strip) do |t|
+        t.name = tool["name"]
+        t.category = tool["category"]
+        t.icon_emoji = tool["icon_emoji"] || "\u{1F916}"
+      end
 
-    AiTool.insert_all(rows) if rows.any?
+      OrganisationAiTool.create!(
+        organisation: self,
+        ai_tool: ai_tool,
+        approved: false
+      )
+    end
   end
 end

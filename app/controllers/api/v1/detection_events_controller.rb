@@ -15,7 +15,9 @@ module Api
 
         organisation = employee.organisation
 
-        ai_tool = organisation.ai_tools.find_by(domain: params[:domain].to_s.downcase)
+        ai_tool = AiTool.joins(:organisation_ai_tools)
+                        .where(organisation_ai_tools: { organisation_id: organisation.id })
+                        .find_by(domain: params[:domain].to_s.downcase)
         if ai_tool.nil?
           render json: { error: "unknown domain" }, status: :unprocessable_entity
           return

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "API V1 Detection Events", type: :request do
   let(:organisation) { create(:organisation) }
   let(:employee) { create(:employee, organisation: organisation) }
-  let(:ai_tool) { organisation.ai_tools.first || create(:ai_tool, organisation: organisation, domain: "chat.openai.com") }
+  let(:ai_tool) { organisation.ai_tools.first }
 
   let(:valid_params) do
     {

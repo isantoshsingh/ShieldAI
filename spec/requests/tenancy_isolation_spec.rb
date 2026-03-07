@@ -23,10 +23,12 @@ RSpec.describe "Tenancy Isolation", type: :request do
   end
 
   describe "AI Tools" do
-    it "PATCH toggle_approved for Org B tool returns 404" do
+    it "PATCH toggle_approved for Org B-only tool returns 404" do
       sign_in admin_a
-      tool_b = org_b.ai_tools.first
-      patch toggle_approved_ai_tool_path(tool_b)
+      # Create a tool that only Org B has in its join table
+      unique_tool = create(:ai_tool, domain: "orgb-only.example.com")
+      create(:organisation_ai_tool, organisation: org_b, ai_tool: unique_tool, approved: false)
+      patch toggle_approved_ai_tool_path(unique_tool)
       expect(response).to have_http_status(:not_found)
     end
   end
@@ -119,25 +121,29 @@ RSpec.describe "Tenancy Isolation", type: :request do
     end
 
     it "returns 'medium' for 1-2 unapproved events" do
-      unapproved_tool = create(:ai_tool, organisation: org_a, approved: false)
+      unapproved_tool = create(:ai_tool)
+      create(:organisation_ai_tool, organisation: org_a, ai_tool: unapproved_tool, approved: false)
       create(:detection_event, organisation: org_a, employee: employee_a, ai_tool: unapproved_tool)
       expect(employee_a.risk_level).to eq("medium")
     end
 
     it "returns 'high' for 3+ unapproved events" do
-      unapproved_tool = create(:ai_tool, organisation: org_a, approved: false)
+      unapproved_tool = create(:ai_tool)
+      create(:organisation_ai_tool, organisation: org_a, ai_tool: unapproved_tool, approved: false)
       3.times { create(:detection_event, organisation: org_a, employee: employee_a, ai_tool: unapproved_tool) }
       expect(employee_a.risk_level).to eq("high")
     end
 
     it "approved tool events do not count" do
-      approved_tool = create(:ai_tool, organisation: org_a, approved: true)
+      approved_tool = create(:ai_tool)
+      create(:organisation_ai_tool, organisation: org_a, ai_tool: approved_tool, approved: true)
       5.times { create(:detection_event, organisation: org_a, employee: employee_a, ai_tool: approved_tool) }
       expect(employee_a.risk_level).to eq("low")
     end
 
     it "events from other orgs do not count" do
-      unapproved_tool_b = create(:ai_tool, organisation: org_b, approved: false)
+      unapproved_tool_b = create(:ai_tool)
+      create(:organisation_ai_tool, organisation: org_b, ai_tool: unapproved_tool_b, approved: false)
       5.times { create(:detection_event, organisation: org_b, employee: employee_b, ai_tool: unapproved_tool_b) }
       expect(employee_a.risk_level).to eq("low")
     end
