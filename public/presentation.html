@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShieldAI — Investor &amp; Judge Presentation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --indigo-50: #eef2ff; --indigo-100: #e0e7ff; --indigo-200: #c7d2fe;
+      --indigo-400: #818cf8; --indigo-500: #6366f1; --indigo-600: #4f46e5;
+      --indigo-700: #4338ca; --indigo-900: #312e81;
+      --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+      --gray-300: #d1d5db; --gray-400: #9ca3af; --gray-500: #6b7280;
+      --gray-600: #4b5563; --gray-700: #374151; --gray-800: #1f2937;
+      --gray-900: #111827;
+      --red-500: #ef4444; --red-50: #fef2f2;
+      --green-500: #22c55e; --green-50: #f0fdf4; --green-700: #15803d;
+      --yellow-500: #eab308; --yellow-50: #fefce8;
+      --slide-bg: #ffffff;
+    }
+
+    html { font-family: 'Inter', -apple-system, sans-serif; scroll-behavior: smooth; }
+    body { background: var(--gray-100); color: var(--gray-800); }
+
+    /* ─── Slide Container ─── */
+    .slide {
+      width: 100%; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 48px 24px;
+      position: relative;
+    }
+    .slide:nth-child(odd) { background: var(--slide-bg); }
+    .slide:nth-child(even) { background: var(--gray-50); }
+    .slide-inner {
+      max-width: 1100px; width: 100%;
+    }
+
+    /* ─── Slide Navigation ─── */
+    .slide-nav {
+      position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 10px; z-index: 100;
+    }
+    .slide-nav a {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--gray-300); display: block;
+      transition: all 0.3s;
+    }
+    .slide-nav a:hover, .slide-nav a.active {
+      background: var(--indigo-500); transform: scale(1.4);
+    }
+
+    /* ─── Progress Bar ─── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px;
+      background: linear-gradient(90deg, var(--indigo-500), var(--indigo-400));
+      z-index: 200; transition: width 0.3s;
+    }
+
+    /* ─── Typography ─── */
+    .slide-number {
+      font-size: 11px; font-weight: 600; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--indigo-500); margin-bottom: 16px;
+    }
+    h1 { font-size: 56px; font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; color: var(--gray-900); }
+    h2 { font-size: 40px; font-weight: 700; line-height: 1.2; letter-spacing: -1px; color: var(--gray-900); }
+    h3 { font-size: 22px; font-weight: 600; color: var(--gray-800); }
+    .subtitle { font-size: 20px; color: var(--gray-500); line-height: 1.6; font-weight: 400; margin-top: 16px; max-width: 680px; }
+    .label { font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gray-400); }
+
+    /* ─── Hero Slide ─── */
+    .hero-slide { background: linear-gradient(135deg, var(--indigo-900) 0%, #1e1b4b 50%, #0f172a 100%) !important; min-height: 100vh; }
+    .hero-slide h1 { color: #fff; font-size: 64px; }
+    .hero-slide .subtitle { color: rgba(255,255,255,0.65); font-size: 22px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 100px; padding: 8px 20px;
+      font-size: 13px; font-weight: 500; color: var(--indigo-200);
+      margin-bottom: 24px;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-500); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .hero-cta {
+      margin-top: 40px; display: inline-flex; align-items: center; gap: 8px;
+      background: var(--indigo-500); color: #fff; padding: 14px 32px;
+      border-radius: 12px; font-weight: 600; font-size: 15px; text-decoration: none;
+      transition: background 0.2s;
+    }
+    .hero-cta:hover { background: var(--indigo-600); }
+    .hero-visual {
+      position: absolute; right: -60px; top: 50%; transform: translateY(-50%);
+      width: 520px; height: 520px; border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.15), transparent 70%);
+    }
+
+    /* ─── Stat Cards ─── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 40px; }
+    .stat-card {
+      background: #fff; border: 1px solid var(--gray-200); border-radius: 16px;
+      padding: 28px; text-align: center; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+    .stat-value { font-size: 48px; font-weight: 800; color: var(--indigo-600); line-height: 1; }
+    .stat-label { font-size: 14px; color: var(--gray-500); margin-top: 8px; font-weight: 500; }
+
+    /* ─── Feature Cards ─── */
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px; }
+    .feature-card {
+      background: #fff; border: 1px solid var(--gray-200); border-radius: 16px;
+      padding: 32px; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+    .feature-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 16px;
+    }
+    .feature-icon.indigo { background: var(--indigo-50); }
+    .feature-icon.green { background: var(--green-50); }
+    .feature-icon.yellow { background: var(--yellow-50); }
+    .feature-icon.red { background: var(--red-50); }
+    .feature-card p { font-size: 14px; color: var(--gray-500); line-height: 1.7; margin-top: 8px; }
+
+    /* ─── Two-Column Layout ─── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .two-col.reverse { direction: rtl; }
+    .two-col.reverse > * { direction: ltr; }
+
+    /* ─── Mock Browser ─── */
+    .browser-mock {
+      background: #fff; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12); border: 1px solid var(--gray-200);
+    }
+    .browser-bar {
+      background: var(--gray-100); padding: 12px 16px;
+      display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--gray-200);
+    }
+    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .browser-dot.r { background: #ff5f56; } .browser-dot.y { background: #ffbd2e; } .browser-dot.g { background: #27c93f; }
+    .browser-url {
+      flex: 1; margin-left: 12px; background: #fff; border-radius: 6px;
+      padding: 6px 12px; font-size: 12px; color: var(--gray-400); border: 1px solid var(--gray-200);
+    }
+    .browser-content { padding: 24px; }
+
+    /* ─── Dashboard Mock ─── */
+    .mock-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+    .mock-stat {
+      background: var(--gray-50); border-radius: 8px; padding: 12px; text-align: center;
+    }
+    .mock-stat .val { font-size: 22px; font-weight: 700; color: var(--gray-800); }
+    .mock-stat .lbl { font-size: 10px; color: var(--gray-400); margin-top: 2px; }
+    .mock-chart {
+      background: var(--gray-50); border-radius: 8px; padding: 16px; height: 140px;
+      display: flex; align-items: flex-end; gap: 8px; justify-content: center;
+    }
+    .mock-bar {
+      width: 28px; border-radius: 4px 4px 0 0;
+      background: linear-gradient(to top, var(--indigo-500), var(--indigo-400));
+    }
+    .mock-bar:nth-child(1) { height: 65%; } .mock-bar:nth-child(2) { height: 85%; }
+    .mock-bar:nth-child(3) { height: 50%; } .mock-bar:nth-child(4) { height: 95%; }
+    .mock-bar:nth-child(5) { height: 70%; } .mock-bar:nth-child(6) { height: 40%; }
+    .mock-bar:nth-child(7) { height: 78%; } .mock-bar:nth-child(8) { height: 55%; }
+
+    /* ─── Risk Badge ─── */
+    .risk-badge {
+      display: inline-flex; padding: 4px 12px; border-radius: 100px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    }
+    .risk-high { background: #fef2f2; color: #dc2626; }
+    .risk-medium { background: #fefce8; color: #ca8a04; }
+    .risk-low { background: #f0fdf4; color: #16a34a; }
+
+    /* ─── Tool Grid ─── */
+    .tool-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .tool-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; border: 1px solid var(--gray-200); border-radius: 100px;
+      padding: 8px 16px; font-size: 13px; font-weight: 500; color: var(--gray-700);
+    }
+
+    /* ─── Architecture ─── */
+    .arch-flow {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-top: 48px; flex-wrap: wrap;
+    }
+    .arch-box {
+      background: #fff; border: 2px solid var(--gray-200); border-radius: 16px;
+      padding: 28px 32px; text-align: center; min-width: 180px;
+      transition: border-color 0.2s;
+    }
+    .arch-box:hover { border-color: var(--indigo-400); }
+    .arch-box .icon { font-size: 32px; margin-bottom: 8px; }
+    .arch-box .name { font-size: 15px; font-weight: 600; color: var(--gray-800); }
+    .arch-box .desc { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+    .arch-arrow {
+      font-size: 24px; color: var(--indigo-400); padding: 0 16px; font-weight: 300;
+    }
+
+    /* ─── Timeline ─── */
+    .timeline { margin-top: 32px; }
+    .timeline-item {
+      display: flex; gap: 20px; padding: 20px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .timeline-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--indigo-500); margin-top: 6px; flex-shrink: 0;
+    }
+    .timeline-content .title { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+    .timeline-content .meta { font-size: 12px; color: var(--gray-400); margin-top: 2px; }
+
+    /* ─── Comparison Table ─── */
+    .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 32px; border-radius: 16px; overflow: hidden; border: 1px solid var(--gray-200); }
+    .compare-table th { background: var(--gray-50); padding: 16px 20px; text-align: left; font-size: 13px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; }
+    .compare-table td { padding: 16px 20px; font-size: 14px; color: var(--gray-700); border-top: 1px solid var(--gray-100); }
+    .compare-table tr:hover td { background: var(--indigo-50); }
+    .check { color: var(--green-500); font-weight: 700; } .cross { color: var(--gray-300); }
+
+    /* ─── CTA Slide ─── */
+    .cta-slide { background: linear-gradient(135deg, var(--indigo-900), #1e1b4b) !important; text-align: center; }
+    .cta-slide h2 { color: #fff; font-size: 48px; }
+    .cta-slide .subtitle { color: rgba(255,255,255,0.6); margin: 16px auto 0; }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; margin-top: 40px; }
+    .cta-btn {
+      padding: 16px 36px; border-radius: 12px; font-weight: 600; font-size: 15px;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .cta-btn.primary { background: #fff; color: var(--indigo-700); }
+    .cta-btn.primary:hover { background: var(--indigo-100); }
+    .cta-btn.secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+    .cta-btn.secondary:hover { background: rgba(255,255,255,0.15); }
+
+    /* ─── Security Grid ─── */
+    .security-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 32px; }
+    .security-item {
+      display: flex; gap: 16px; padding: 20px; background: #fff;
+      border: 1px solid var(--gray-200); border-radius: 12px;
+    }
+    .security-item .icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .security-item .title { font-size: 14px; font-weight: 600; color: var(--gray-800); }
+    .security-item .desc { font-size: 13px; color: var(--gray-500); margin-top: 4px; line-height: 1.5; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      h1 { font-size: 36px; } h2 { font-size: 28px; }
+      .hero-slide h1 { font-size: 40px; }
+      .stats-grid, .features-grid { grid-template-columns: 1fr 1fr; }
+      .two-col { grid-template-columns: 1fr; gap: 32px; }
+      .arch-flow { flex-direction: column; }
+      .arch-arrow { transform: rotate(90deg); }
+      .slide-nav { display: none; }
+      .mock-stats { grid-template-columns: repeat(2, 1fr); }
+      .security-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="slide-nav" id="slideNav">
+  <a href="#hero" title="Home"></a>
+  <a href="#problem" title="Problem"></a>
+  <a href="#solution" title="Solution"></a>
+  <a href="#product" title="Product"></a>
+  <a href="#how" title="How It Works"></a>
+  <a href="#coverage" title="Coverage"></a>
+  <a href="#security" title="Security"></a>
+  <a href="#architecture" title="Architecture"></a>
+  <a href="#differentiator" title="Why ShieldAI"></a>
+  <a href="#cta" title="Get Started"></a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 1 — HERO
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide hero-slide" id="hero">
+  <div class="slide-inner" style="position: relative; z-index: 1;">
+    <div class="hero-badge"><span class="dot"></span> Multi-Tenant SaaS &middot; Rails 8 &middot; Chrome MV3</div>
+    <h1>Know which AI tools<br>your team is using.</h1>
+    <p class="subtitle">
+      ShieldAI gives organisations real-time visibility into employee AI tool usage &mdash;
+      without reading content, blocking access, or invading privacy.
+    </p>
+    <a href="#problem" class="hero-cta">See the problem we solve &darr;</a>
+  </div>
+  <div class="hero-visual"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 2 — PROBLEM
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="problem">
+  <div class="slide-inner">
+    <p class="slide-number">The Problem</p>
+    <h2>Shadow AI is the new Shadow IT.</h2>
+    <p class="subtitle">
+      Employees adopt AI tools faster than security teams can track.
+      Most organisations have zero visibility into which AI services
+      handle their data &mdash; until something goes wrong.
+    </p>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value">78%</div>
+        <div class="stat-label">of employees use AI tools at work without approval</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">0</div>
+        <div class="stat-label">visibility for most security teams into AI tool usage</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">35+</div>
+        <div class="stat-label">AI tools employees can access from a browser today</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">$4.5M</div>
+        <div class="stat-label">average cost of a data breach involving AI tools</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 3 — SOLUTION
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="solution">
+  <div class="slide-inner">
+    <p class="slide-number">Our Solution</p>
+    <h2>Detect. Don&rsquo;t block.</h2>
+    <p class="subtitle">
+      A lightweight Chrome extension paired with a powerful admin dashboard.
+      Detection and visibility only &mdash; no content reading, no keystroke logging, no access blocking.
+    </p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon indigo">&#128269;</div>
+        <h3>Silent Detection</h3>
+        <p>Chrome extension detects visits to 35 known AI tool domains. Records only the domain name and page title. Nothing else.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">&#128202;</div>
+        <h3>Real-Time Dashboard</h3>
+        <p>Live usage charts, employee risk scores, session counts, and tool breakdowns. Know what&rsquo;s happening now, not next quarter.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon yellow">&#9888;&#65039;</div>
+        <h3>Risk Classification</h3>
+        <p>Employees using unapproved tools are automatically flagged as low, medium, or high risk based on event volume.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon indigo">&#127961;</div>
+        <h3>Multi-Tenant Isolation</h3>
+        <p>Every organisation&rsquo;s data is completely isolated. No org can ever see another&rsquo;s data. Enforced at every query.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">&#9989;</div>
+        <h3>Approval Workflow</h3>
+        <p>Mark tools as approved or unapproved per organisation. Instantly see which employees use sanctioned vs unsanctioned tools.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon yellow">&#128229;</div>
+        <h3>CSV Export &amp; Reports</h3>
+        <p>Filter by date range, export to CSV, and receive reports via email. Built for compliance teams who need audit trails.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 4 — PRODUCT (Dashboard Mock)
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="product">
+  <div class="slide-inner">
+    <div class="two-col">
+      <div>
+        <p class="slide-number">The Product</p>
+        <h2>A dashboard built for security teams.</h2>
+        <p class="subtitle" style="max-width: 480px;">
+          Four stat cards, usage charts, employee risk overview, and a real-time activity feed &mdash;
+          everything an admin needs in one view.
+        </p>
+        <div style="margin-top: 32px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span class="risk-badge risk-high">HIGH RISK</span>
+            <span style="font-size: 13px; color: var(--gray-500);">3+ unapproved tool visits</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <span class="risk-badge risk-medium">MEDIUM</span>
+            <span style="font-size: 13px; color: var(--gray-500);">1-2 unapproved tool visits</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span class="risk-badge risk-low">LOW RISK</span>
+            <span style="font-size: 13px; color: var(--gray-500);">Only approved tools used</span>
+          </div>
+        </div>
+      </div>
+      <div class="browser-mock">
+        <div class="browser-bar">
+          <span class="browser-dot r"></span>
+          <span class="browser-dot y"></span>
+          <span class="browser-dot g"></span>
+          <span class="browser-url">shieldai.example.com/dashboard</span>
+        </div>
+        <div class="browser-content">
+          <div class="mock-stats">
+            <div class="mock-stat"><div class="val">1,247</div><div class="lbl">Total Sessions</div></div>
+            <div class="mock-stat"><div class="val">27</div><div class="lbl">Active Employees</div></div>
+            <div class="mock-stat"><div class="val">18</div><div class="lbl">Unique Tools</div></div>
+            <div class="mock-stat"><div class="val">43</div><div class="lbl">Today</div></div>
+          </div>
+          <div style="font-size: 12px; font-weight: 600; color: var(--gray-500); margin-bottom: 8px;">Top AI Tools (30 days)</div>
+          <div class="mock-chart">
+            <div class="mock-bar"></div>
+            <div class="mock-bar"></div>
+            <div class="mock-bar"></div>
+            <div class="mock-bar"></div>
+            <div class="mock-bar"></div>
+            <div class="mock-bar"></div>
+            <div class="mock-bar"></div>
+            <div class="mock-bar"></div>
+          </div>
+          <div style="margin-top: 16px;">
+            <div style="font-size: 12px; font-weight: 600; color: var(--gray-500); margin-bottom: 8px;">Recent Activity</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-100);">
+              <div style="display: flex; align-items: center; gap: 8px;"><span>&#128172;</span><span style="font-size: 12px;">Sarah K. &mdash; ChatGPT</span></div>
+              <span style="font-size: 10px; color: var(--gray-400);">2 min ago</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-100);">
+              <div style="display: flex; align-items: center; gap: 8px;"><span>&#129302;</span><span style="font-size: 12px;">James R. &mdash; Claude</span></div>
+              <span style="font-size: 10px; color: var(--gray-400);">5 min ago</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 0;">
+              <div style="display: flex; align-items: center; gap: 8px;"><span>&#127912;</span><span style="font-size: 12px;">Alex M. &mdash; Midjourney</span></div>
+              <span style="font-size: 10px; color: var(--gray-400);">8 min ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 5 — HOW IT WORKS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="how">
+  <div class="slide-inner">
+    <p class="slide-number">How It Works</p>
+    <h2>Three components. Zero complexity.</h2>
+    <p class="subtitle">
+      Install the extension, hand out tokens, and watch the dashboard light up. No agents, no proxies, no DNS changes.
+    </p>
+    <div class="arch-flow">
+      <div class="arch-box">
+        <div class="icon">&#127760;</div>
+        <div class="name">Employee Browser</div>
+        <div class="desc">Chrome extension runs silently</div>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-box" style="border-color: var(--indigo-400);">
+        <div class="icon">&#128272;</div>
+        <div class="name">ShieldAI API</div>
+        <div class="desc">Token-authenticated POST</div>
+      </div>
+      <div class="arch-arrow">&rarr;</div>
+      <div class="arch-box">
+        <div class="icon">&#128202;</div>
+        <div class="name">Admin Dashboard</div>
+        <div class="desc">Real-time Hotwire updates</div>
+      </div>
+    </div>
+    <div class="timeline" style="max-width: 700px; margin: 48px auto 0;">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="title">1. Employee visits chat.openai.com</div>
+          <div class="meta">Content script matches domain against 35 known AI tools. Sends domain + page title to service worker.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="title">2. Service worker deduplicates (30-min window)</div>
+          <div class="meta">Same domain won&rsquo;t be reported again for 30 minutes. Reduces noise, preserves signal.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="title">3. POST to /api/v1/detection_events</div>
+          <div class="meta">Token-authenticated. Organisation resolved from employee&rsquo;s extension_token. Event created with org scoping.</div>
+        </div>
+      </div>
+      <div class="timeline-item" style="border-bottom: none;">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <div class="title">4. Dashboard updates in real time</div>
+          <div class="meta">Admin sees the event immediately. Risk scores recalculate. Charts update on next page load via Chartkick.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 6 — AI TOOL COVERAGE
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="coverage">
+  <div class="slide-inner">
+    <p class="slide-number">Coverage</p>
+    <h2>35 AI tools tracked across 6 categories.</h2>
+    <p class="subtitle">
+      From ChatGPT to Midjourney, Cursor to Grammarly &mdash; every major AI tool your employees might use.
+    </p>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 40px;">
+      <div>
+        <div class="label" style="margin-bottom: 12px;">Chat &amp; Assistants &middot; 12 tools</div>
+        <div class="tool-grid">
+          <span class="tool-chip">&#128172; ChatGPT</span>
+          <span class="tool-chip">&#129302; Claude</span>
+          <span class="tool-chip">&#10024; Gemini</span>
+          <span class="tool-chip">&#129668; Copilot</span>
+          <span class="tool-chip">&#128640; Grok</span>
+          <span class="tool-chip">&#128221; Poe</span>
+          <span class="tool-chip" style="font-size: 12px; color: var(--gray-400);">+6 more</span>
+        </div>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom: 12px;">Code &amp; Development &middot; 7 tools</div>
+        <div class="tool-grid">
+          <span class="tool-chip">&#9000;&#65039; Cursor</span>
+          <span class="tool-chip">&#128421;&#65039; Replit</span>
+          <span class="tool-chip">&#127940; Codeium</span>
+          <span class="tool-chip">&#9889; Bolt.new</span>
+          <span class="tool-chip">&#9650; v0.dev</span>
+          <span class="tool-chip" style="font-size: 12px; color: var(--gray-400);">+2 more</span>
+        </div>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom: 12px;">Image &amp; Creative &middot; 4 tools</div>
+        <div class="tool-grid">
+          <span class="tool-chip">&#127912; Midjourney</span>
+          <span class="tool-chip">&#128293; Adobe Firefly</span>
+          <span class="tool-chip">&#128396;&#65039; Canva AI</span>
+          <span class="tool-chip">&#128444;&#65039; Leonardo AI</span>
+        </div>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom: 12px;">Writing &amp; Productivity &middot; 5 tools</div>
+        <div class="tool-grid">
+          <span class="tool-chip">&#9997;&#65039; Jasper AI</span>
+          <span class="tool-chip">&#128203; Copy.ai</span>
+          <span class="tool-chip">&#128214; Grammarly</span>
+          <span class="tool-chip">&#128211; Notion AI</span>
+          <span class="tool-chip" style="font-size: 12px; color: var(--gray-400);">+1 more</span>
+        </div>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom: 12px;">Search &middot; 2 tools</div>
+        <div class="tool-grid">
+          <span class="tool-chip">&#128270; Perplexity</span>
+          <span class="tool-chip">&#127760; You.com</span>
+        </div>
+      </div>
+      <div>
+        <div class="label" style="margin-bottom: 12px;">Other &middot; 5 tools</div>
+        <div class="tool-grid">
+          <span class="tool-chip">&#127916; Runway ML</span>
+          <span class="tool-chip">&#128266; ElevenLabs</span>
+          <span class="tool-chip">&#127925; Suno AI</span>
+          <span class="tool-chip" style="font-size: 12px; color: var(--gray-400);">+2 more</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 7 — SECURITY & PRIVACY
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="security">
+  <div class="slide-inner">
+    <p class="slide-number">Security &amp; Privacy</p>
+    <h2>Built for trust. Engineered for isolation.</h2>
+    <p class="subtitle">
+      We collect only what&rsquo;s needed and nothing more. Every architectural decision prioritises data isolation and minimal footprint.
+    </p>
+    <div class="security-grid">
+      <div class="security-item">
+        <div class="icon">&#128683;</div>
+        <div>
+          <div class="title">No content reading</div>
+          <div class="desc">The extension records domain name and page title only. No prompts, no form values, no keystrokes. Ever.</div>
+        </div>
+      </div>
+      <div class="security-item">
+        <div class="icon">&#128274;</div>
+        <div>
+          <div class="title">Complete tenant isolation</div>
+          <div class="desc">Every database query is scoped through current_organisation. Cross-org access returns 404, not 403. Enforced at controller level.</div>
+        </div>
+      </div>
+      <div class="security-item">
+        <div class="icon">&#128737;&#65039;</div>
+        <div>
+          <div class="title">Rate limiting with Rack::Attack</div>
+          <div class="desc">API: 60 req/min per token, 300 req/5min per IP. Signup: 10/hr per IP. Abuse is stopped at the edge.</div>
+        </div>
+      </div>
+      <div class="security-item">
+        <div class="icon">&#128272;</div>
+        <div>
+          <div class="title">Token-based extension auth</div>
+          <div class="desc">Employees never get dashboard credentials. Each gets a unique extension_token that can be regenerated instantly.</div>
+        </div>
+      </div>
+      <div class="security-item">
+        <div class="icon">&#128466;&#65039;</div>
+        <div>
+          <div class="title">90-day auto-cleanup</div>
+          <div class="desc">Raw detection events are deleted after 90 days. Aggregated daily summaries are preserved for long-term trends.</div>
+        </div>
+      </div>
+      <div class="security-item">
+        <div class="icon">&#9989;</div>
+        <div>
+          <div class="title">Role-based access control</div>
+          <div class="desc">Three roles: super_admin (platform), org_admin (full org access), org_member (read-only). No over-privileged accounts.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 8 — ARCHITECTURE
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="architecture">
+  <div class="slide-inner">
+    <p class="slide-number">Technical Architecture</p>
+    <h2>Modern stack. Zero external dependencies.</h2>
+    <p class="subtitle">
+      Rails 8, PostgreSQL, Solid Queue &mdash; no Redis, no Sidekiq, no Elasticsearch.
+      Ship on a single VPS with Kamal.
+    </p>
+    <div class="features-grid" style="grid-template-columns: repeat(4, 1fr); margin-top: 40px;">
+      <div class="feature-card" style="text-align: center;">
+        <div style="font-size: 36px; margin-bottom: 8px;">&#128142;</div>
+        <h3 style="font-size: 16px;">Rails 8.x</h3>
+        <p style="font-size: 12px;">Ruby 3.3 &middot; Hotwire &middot; Turbo Frames &amp; Streams</p>
+      </div>
+      <div class="feature-card" style="text-align: center;">
+        <div style="font-size: 36px; margin-bottom: 8px;">&#128024;</div>
+        <h3 style="font-size: 16px;">PostgreSQL 16+</h3>
+        <p style="font-size: 12px;">Foreign keys &middot; Cascade deletes &middot; Composite indexes</p>
+      </div>
+      <div class="feature-card" style="text-align: center;">
+        <div style="font-size: 36px; margin-bottom: 8px;">&#9889;</div>
+        <h3 style="font-size: 16px;">Solid Queue</h3>
+        <p style="font-size: 12px;">Background jobs without Redis &middot; Daily summaries &middot; CSV exports</p>
+      </div>
+      <div class="feature-card" style="text-align: center;">
+        <div style="font-size: 36px; margin-bottom: 8px;">&#128230;</div>
+        <h3 style="font-size: 16px;">Kamal Deploy</h3>
+        <p style="font-size: 12px;">Docker containers &middot; Let&rsquo;s Encrypt SSL &middot; Zero-downtime</p>
+      </div>
+    </div>
+    <div style="margin-top: 40px;">
+      <div class="label" style="margin-bottom: 16px;">Database Schema &mdash; 7 tables</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <span class="tool-chip" style="font-family: monospace; font-size: 12px;">organisations</span>
+        <span class="tool-chip" style="font-family: monospace; font-size: 12px;">users</span>
+        <span class="tool-chip" style="font-family: monospace; font-size: 12px;">employees</span>
+        <span class="tool-chip" style="font-family: monospace; font-size: 12px;">ai_tools</span>
+        <span class="tool-chip" style="font-family: monospace; font-size: 12px;">organisation_ai_tools</span>
+        <span class="tool-chip" style="font-family: monospace; font-size: 12px;">detection_events</span>
+        <span class="tool-chip" style="font-family: monospace; font-size: 12px;">daily_summaries</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 9 — DIFFERENTIATOR
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide" id="differentiator">
+  <div class="slide-inner">
+    <p class="slide-number">Why ShieldAI</p>
+    <h2>Detection without invasion.</h2>
+    <p class="subtitle">
+      Most AI governance tools try to do too much. We do one thing exceptionally well: tell you which AI tools your team is using.
+    </p>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width: 35%;">Capability</th>
+          <th style="width: 20%; text-align: center;">ShieldAI</th>
+          <th style="width: 20%; text-align: center;">DLP / Proxy Tools</th>
+          <th style="width: 25%; text-align: center;">Manual Surveys</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Real-time AI tool detection</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+        </tr>
+        <tr>
+          <td>No content inspection</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+        </tr>
+        <tr>
+          <td>Deploy in under 10 minutes</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+        </tr>
+        <tr>
+          <td>No network infrastructure changes</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+        </tr>
+        <tr>
+          <td>Automated risk scoring</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+        </tr>
+        <tr>
+          <td>Multi-tenant SaaS ready</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+        </tr>
+        <tr>
+          <td>Employee privacy preserved</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+        </tr>
+        <tr>
+          <td>Per-org approval workflows</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="check">&#10003;</td>
+          <td style="text-align: center;" class="cross">&#10005;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SLIDE 10 — CTA
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="slide cta-slide" id="cta">
+  <div class="slide-inner">
+    <div style="font-size: 48px; margin-bottom: 24px;">&#128737;&#65039;</div>
+    <h2>Ready to see what your<br>team is really using?</h2>
+    <p class="subtitle" style="max-width: 560px;">
+      Self-service signup. No credit card required.<br>
+      Start seeing AI tool usage data in minutes.
+    </p>
+    <div class="cta-buttons">
+      <a href="/signup" class="cta-btn primary">Start Free &rarr;</a>
+      <a href="#hero" class="cta-btn secondary">Back to Top</a>
+    </div>
+    <div style="margin-top: 64px; display: flex; justify-content: center; gap: 48px;">
+      <div style="text-align: center;">
+        <div style="font-size: 28px; font-weight: 700; color: #fff;">35</div>
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5);">AI Tools Tracked</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 28px; font-weight: 700; color: #fff;">7</div>
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5);">Database Tables</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 28px; font-weight: 700; color: #fff;">38</div>
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5);">Passing Tests</div>
+      </div>
+      <div style="text-align: center;">
+        <div style="font-size: 28px; font-weight: 700; color: #fff;">0</div>
+        <div style="font-size: 12px; color: rgba(255,255,255,0.5);">N+1 Queries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // ─── Slide Navigation Dots ───
+  const slides = document.querySelectorAll('.slide');
+  const navDots = document.querySelectorAll('.slide-nav a');
+  const progressBar = document.getElementById('progressBar');
+
+  function updateNav() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    progressBar.style.width = progress + '%';
+
+    slides.forEach((slide, i) => {
+      const rect = slide.getBoundingClientRect();
+      if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+        navDots.forEach(d => d.classList.remove('active'));
+        if (navDots[i]) navDots[i].classList.add('active');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateNav);
+  window.addEventListener('load', updateNav);
+</script>
+
+</body>
+</html>
