@@ -1,0 +1,9 @@
+production:
+  daily_summary:
+    class: DailySummaryJob
+    schedule: "30 0 * * *"
+    queue: default
+  weekly_cleanup:
+    class: CleanupJob
+    schedule: "0 2 * * 0"
+    queue: default

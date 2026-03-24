@@ -1,0 +1,42 @@
+service: shieldai
+
+image: your-dockerhub-username/shieldai
+
+servers:
+  web:
+    - 192.168.0.1
+
+proxy:
+  host: <%= ENV["SHIELDAI_HOST"] %>
+  ssl: true
+
+registry:
+  server: hub.docker.com
+  username: your-user
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  secret:
+    - DATABASE_URL
+    - SECRET_KEY_BASE
+    - SHIELDAI_HOST
+    - SMTP_ADDRESS
+    - SMTP_PORT
+    - SMTP_USERNAME
+    - SMTP_PASSWORD
+    - SMTP_DOMAIN
+    - MAILER_FROM
+    - SEED_SUPER_ADMIN_EMAIL
+    - SEED_SUPER_ADMIN_PASSWORD
+    - SEED_ORG_NAME
+    - SEED_ORG_ADMIN_EMAIL
+    - SEED_ORG_ADMIN_PASSWORD
+
+volumes:
+  - "shieldai_storage:/rails/storage"
+
+asset_path: /rails/public/assets
+
+builder:
+  arch: amd64

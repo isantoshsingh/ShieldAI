@@ -1,0 +1,27 @@
+<div class="space-y-3">
+  <% events.each do |event| %>
+    <div class="flex items-start space-x-3 py-2 border-b border-gray-100">
+      <span class="text-lg mt-0.5"><%= event.ai_tool.icon_emoji %></span>
+      <div class="flex-1">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-gray-900"><%= event.ai_tool.name %></span>
+          <% approved = event.ai_tool.approved_for?(current_organisation) %>
+          <span class="inline-flex px-2 py-0.5 text-xs rounded-full <%= approved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= approved ? "Approved" : "Unapproved" %>
+          </span>
+        </div>
+        <p class="text-xs text-gray-500"><%= event.detected_at.strftime("%b %-d, %Y at %l:%M %p") %></p>
+        <% if event.page_title.present? %>
+          <p class="text-xs text-gray-400 truncate" style="max-width: 400px;"><%= event.page_title.truncate(60) %></p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<% next_offset = offset + 20 %>
+<% if events.size >= 20 %>
+  <div class="mt-4 text-center">
+    <%= link_to "Load more", more_events_employee_path(employee, offset: next_offset), data: { turbo_frame: "activity-timeline" }, class: "text-indigo-600 hover:text-indigo-500 text-sm" %>
+  </div>
+<% end %>

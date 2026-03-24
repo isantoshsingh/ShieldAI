@@ -1,0 +1,81 @@
+<%= link_to "← All Employees", employees_path, class: "text-indigo-600 hover:text-indigo-500 text-sm" %>
+
+<div class="mt-4 bg-white rounded-lg shadow p-6 mb-6">
+  <div class="flex items-center space-x-4">
+    <div class="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-xl font-bold text-indigo-600">
+      <%= @employee.name.split.map(&:first).join.upcase[0..1] %>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900"><%= @employee.name %></h1>
+      <p class="text-gray-500"><%= @employee.email %></p>
+      <p class="text-gray-400 text-sm"><%= @employee.department || "No department" %></p>
+    </div>
+    <div class="ml-auto">
+      <% risk = @employee.risk_level %>
+      <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full
+        <%= risk == 'high' ? 'bg-red-100 text-red-800' : risk == 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+        <%= risk.upcase %> RISK
+      </span>
+      <% unless @employee.active? %>
+        <span class="ml-2 inline-flex px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-800">Deactivated</span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+  <div class="bg-white rounded-lg shadow p-4">
+    <p class="text-sm text-gray-500">Total Sessions</p>
+    <p class="text-2xl font-bold text-gray-900"><%= @employee.detection_events.count %></p>
+  </div>
+  <div class="bg-white rounded-lg shadow p-4">
+    <p class="text-sm text-gray-500">Tools Used</p>
+    <p class="text-2xl font-bold text-gray-900"><%= @employee.detection_events.select(:ai_tool_id).distinct.count %></p>
+  </div>
+  <div class="bg-white rounded-lg shadow p-4">
+    <p class="text-sm text-gray-500">Violations</p>
+    <p class="text-2xl font-bold text-gray-900"><%= @employee.detection_events.unapproved.count %></p>
+  </div>
+  <div class="bg-white rounded-lg shadow p-4">
+    <p class="text-sm text-gray-500">Avg Daily (30d)</p>
+    <p class="text-2xl font-bold text-gray-900"><%= (@employee.detection_events.last_days(30).count / 30.0).round(1) %></p>
+  </div>
+</div>
+
+<% if current_user.org_admin? %>
+  <div class="flex space-x-3 mb-6">
+    <%= button_to "Regenerate Token", regenerate_token_employee_path(@employee), method: :patch, class: "px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 text-sm", data: { turbo_confirm: "Are you sure? The current token will stop working immediately." } %>
+    <% if @employee.active? %>
+      <%= button_to "Deactivate Employee", employee_path(@employee), method: :delete, class: "px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm", data: { turbo_confirm: "Are you sure you want to deactivate this employee?" } %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <div class="lg:col-span-2 bg-white rounded-lg shadow p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Activity Timeline</h2>
+    <turbo-frame id="activity-timeline">
+      <%= render partial: "activity_timeline", locals: { events: @events, employee: @employee, offset: 0 } %>
+    </turbo-frame>
+  </div>
+
+  <div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Tools Used</h2>
+    <div class="space-y-3">
+      <% @tools_used.sort_by { |_, count| -count }.each do |(name, emoji, approved), count| %>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span><%= emoji %></span>
+            <span class="text-sm text-gray-900"><%= name %></span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm text-gray-500"><%= count %></span>
+            <span class="inline-flex px-2 py-0.5 text-xs rounded-full <%= approved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+              <%= approved ? "Approved" : "Unapproved" %>
+            </span>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
